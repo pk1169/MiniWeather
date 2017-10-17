@@ -38,7 +38,8 @@
             android:layout_alignParentRight="true"
             android:layout_gravity="center"
             android:src="@drawable/title_update"
-            android:visibility="visible" />
+            android:visibility="visible"
+            android:clickable="true" />
         <ImageView
             android:id="@+id/title_share"
             android:layout_width="45.0dip"
