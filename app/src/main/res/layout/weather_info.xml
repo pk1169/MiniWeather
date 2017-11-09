@@ -179,10 +179,10 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@id/humidity"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="5.0dip">
+                android:layout_below="@+id/today_temperature"
+                android:layout_alignLeft="@+id/today_temperature"
+                android:layout_alignStart="@+id/today_temperature"
+                android:layout_marginTop="67dp">
                 <!-- 天气情况图片示例 -->
                 <ImageView
                     android:id="@+id/weather_img"
