@@ -31,6 +31,7 @@ public class MyApplication extends Application {
         super.onCreate();
         Log.d(TAG, "MyApplication->Oncreate");
         myApplication = this;
+        // 打开数据库
         mCityDB = openCityDB();
         initCityList();
     }
