@@ -4,12 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +32,8 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * Created by xiaozhang on 2017/11/14.
@@ -86,6 +91,11 @@ public class ChooseAreaFragment extends Fragment {
      */
     private int currentLevel;
 
+    // 搜索相关组件
+
+    private EditText searchEt;
+    private Button searchBth;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,6 +105,9 @@ public class ChooseAreaFragment extends Fragment {
         titleText = (TextView) view.findViewById(R.id.title_text);
         backButton = (Button) view.findViewById(R.id.back_button);
         listView = (ListView) view.findViewById(R.id.list_view);
+        //
+        searchEt = (EditText)view.findViewById(R.id.selectcity_search);
+        searchBth = (Button)view.findViewById(R.id.selectcity_search_button);
         // 新建一个数组适配器ArrayAdapter绑定数据，参数(当前的Activity，布局文件，数据源)
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
         // 视图 listView 加载适配器
@@ -111,7 +124,7 @@ public class ChooseAreaFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(position);
-                    queryCities();
+                    queryCities("");
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
@@ -134,25 +147,44 @@ public class ChooseAreaFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Log.d("search","is null");
+
                 if (currentLevel == LEVEL_COUNTY) {
-                    queryCities();
+                    queryCities("");
                 } else if (currentLevel == LEVEL_CITY) {
-                    queryProvinces();
+                    queryProvinces("");
                 }
             }
         });
-        queryProvinces(); // 先执行查询省份
+        searchBth.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                String searchName =searchEt.getText().toString();
+                if(currentLevel == LEVEL_PROVINCE){
+                    queryProvinces(searchName);
+                }else if(currentLevel == LEVEL_CITY){
+                    queryCities(searchName);
+                }else if(currentLevel == LEVEL_COUNTY){
+                    queryCounties();
+                }
+            }
+        });
+        queryProvinces(""); // 先执行查询省份
     }
 
     /**
      * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询。
      */
-    private void queryProvinces() {
+    private void queryProvinces(String search) {
         titleText.setText("中国");
         // 返回键不显示，且不占用空间
         backButton.setVisibility(View.GONE);
         // 获取省份列表
-        provinceList = DataSupport.findAll(Province.class);
+        if(search.equals("")){
+            provinceList = DataSupport.findAll(Province.class);
+        }else {
+            provinceList = DataSupport.where("provincename = ? ",search).find(Province.class);
+        }
         if (provinceList.size() > 0) {
             dataList.clear(); // 清空列表
             for (Province province : provinceList) {
@@ -174,10 +206,16 @@ public class ChooseAreaFragment extends Fragment {
     /**
      * 查询选中省内所有的市，优先从数据库查询，如果没有查询到再去服务器上查询。
      */
-    private void queryCities() {
+    private void queryCities(String search) {
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.VISIBLE);
-        cityList = DataSupport.where("provinceid = ?", String.valueOf(selectedProvince.getId())).find(City.class);
+        if(search.equals("")){
+            cityList = DataSupport.where("provinceid = ?", String.valueOf(selectedProvince.getId())).find(City.class);
+        }
+        else{
+            cityList = DataSupport.where("provinceid = ? and cityname = ?", String.valueOf(selectedProvince.getId()),search).find(City.class);
+        }
+
         if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
@@ -245,9 +283,9 @@ public class ChooseAreaFragment extends Fragment {
                             closeProgressDialog();
                             // 查询数据
                             if ("province".equals(type)) {
-                                queryProvinces();
+                                queryProvinces("");
                             } else if ("city".equals(type)) {
-                                queryCities();
+                                queryCities("");
                             } else if ("county".equals(type)) {
                                 queryCounties();
                             }

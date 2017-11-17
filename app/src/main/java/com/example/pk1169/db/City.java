@@ -4,6 +4,8 @@ import org.litepal.crud.DataSupport;
 
 /**
  * Created by xiaozhang on 2017/11/14.
+ *
+ * javaBeans
  */
 
 public class City extends DataSupport {

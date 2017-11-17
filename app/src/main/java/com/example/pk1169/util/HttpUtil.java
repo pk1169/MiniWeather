@@ -7,6 +7,10 @@ import okhttp3.Request;
  * Created by xiaozhang on 2017/11/14.
  */
 
+
+/*
+*
+* */
 public class HttpUtil {
     // 发送http请求
     public static void sendOkHttpRequest(String address, okhttp3.Callback callback) {
