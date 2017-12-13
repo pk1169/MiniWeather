@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class Forecast {
     public String date;
 
-    @SerializedName("tmp")
+    @SerializedName("tmp")//对应json中的数据
     public Temperature temperature;
 
     @SerializedName("cond")

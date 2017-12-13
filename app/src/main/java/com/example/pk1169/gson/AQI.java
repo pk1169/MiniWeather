@@ -17,7 +17,7 @@ public class AQI {
 
     public class AQICity {
 
-        public String aqi;
+        public String aqi;//空气污染指数
 
         public String pm25;
 

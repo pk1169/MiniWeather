@@ -19,6 +19,6 @@ public class HttpUtil {
         // 创建一个request对象
         Request request = new Request.Builder().url(address).build();
         // 使用OkHttpClient的newCall()方法来创建一个对象
-        client.newCall(request).enqueue(callback);
+        client.newCall(request).enqueue(callback);//把最终的请求结果回调到okhttp3.callback中
     }
 }

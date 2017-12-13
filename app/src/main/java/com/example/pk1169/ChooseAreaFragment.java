@@ -122,6 +122,7 @@ public class ChooseAreaFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //判断当前等级，如果当前等级为省份，则查询该省份的所有市
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(position);
                     queryCities("");
